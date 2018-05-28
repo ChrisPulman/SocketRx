@@ -12,7 +12,7 @@
     <description>$description$</description>
     <copyright>Copyright © $author$ 2016</copyright>
     <dependencies>
-      <dependency id="Rx-Main" version="2.2.5" />
+      <dependency id="System.Reactive" Version="[3.1.1,4)" />
     </dependencies>
   </metadata>
   <files>

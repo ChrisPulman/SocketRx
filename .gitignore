@@ -48,3 +48,6 @@ Temporary Items
 /packages
 /SocketRx/obj/Debug
 /SocketRx/obj/Release
+/.vs/SocketRx
+/SocketRx/bin/Release
+/SocketRx/obj
