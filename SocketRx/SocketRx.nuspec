@@ -14,4 +14,8 @@
       <dependency id="System.Reactive" Version="[3.1.1,4)" />
     </dependencies>
   </metadata>
+  <files>
+    <file src="SocketRx\bin\Release\SocketRx.dll" target="lib\net461" />
+    <file src="SocketRx\bin\Release\SocketRx.pdb" target="lib\net461" />
+  </files>
 </package>
