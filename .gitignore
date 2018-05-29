@@ -51,3 +51,4 @@ Temporary Items
 /.vs/SocketRx
 /SocketRx/bin/Release
 /SocketRx/obj
+/SocketRx/bin/Debug

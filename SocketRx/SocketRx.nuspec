@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-
 <package>
   <metadata>
     <id>$id$</id>
@@ -10,10 +9,12 @@
     <projectUrl>https://github.com/chrispulman/SocketRx</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <copyright>Copyright © $author$ 2016</copyright>
+    <copyright>Copyright © $author$ 2018</copyright>
     <dependencies>
       <dependency id="System.Reactive" Version="[3.1.1,4)" />
     </dependencies>
+    <releaseNotes>
+    </releaseNotes>
   </metadata>
   <files>
     <file src="bin\$configuration$\$id$.pdb" target="lib\net461\" />
