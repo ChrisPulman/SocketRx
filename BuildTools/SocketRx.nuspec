@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>SocketRx</id>
+    <version>1.0.0</version>
+    <title>SocketRx</title>
+    <authors>ChrisPulman</authors>
+    <owners>ChrisPulman</owners>
+    <projectUrl>https://github.com/chrispulman/SocketRx</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>An Observable Socket extension of System.Net.Sockets.Socket</description>
+    <copyright>Copyright © ChrisPulman 2018</copyright>
+    <dependencies>
+      <dependency id="System.Reactive" version="[3.1.1,4)" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\SocketRx\bin\Release\SocketRx.dll" target="lib\net461" />
+    <file src="..\SocketRx\bin\Release\SocketRx.xml" target="lib\net461" />
+    <file src="..\SocketRx\bin\Release\SocketRx.pdb" target="lib\net461" />
+  </files>
+</package>

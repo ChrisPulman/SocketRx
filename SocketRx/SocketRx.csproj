@@ -30,6 +30,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <LangVersion>latest</LangVersion>
+    <DocumentationFile>bin\Release\SocketRx.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -50,9 +51,6 @@
   <ItemGroup>
     <Compile Include="SocketRx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="SocketRx.nuspec" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Reactive">

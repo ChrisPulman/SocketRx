@@ -8,7 +8,7 @@ nuget:
 before_build:
 - cmd: nuget restore
 after_build:
-- cmd: nuget pack SocketRx\SocketRx.nuspec
+- cmd: nuget pack BuildTools\SocketRx.nuspec
 build:
   verbosity: minimal
 artifacts:
