@@ -13,10 +13,5 @@
     <dependencies>
       <dependency id="System.Reactive" Version="[3.1.1,4)" />
     </dependencies>
-    <releaseNotes>
-    </releaseNotes>
   </metadata>
-  <files>
-    <file src="bin\$configuration$\$id$.pdb" target="lib\net461\" />
-  </files>
 </package>
