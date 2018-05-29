@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <id>SocketRx</id>
+    <version>1.0.0</version>
+    <title>SocketRx</title>
+    <authors>ChrisPulman</authors>
+    <owners>ChrisPulman</owners>
     <projectUrl>https://github.com/chrispulman/SocketRx</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
-    <copyright>Copyright © $author$ 2018</copyright>
+    <description>An Observable Socket extension of System.Net.Sockets.Socket</description>
+    <copyright>Copyright © ChrisPulman 2018</copyright>
     <dependencies>
       <dependency id="System.Reactive" Version="[3.1.1,4)" />
     </dependencies>
