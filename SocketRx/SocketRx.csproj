@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 		<AnalysisMode>All</AnalysisMode>
 		<IsAotCompatible>true</IsAotCompatible>
 		<RootNamespace>CP.Net.Sockets</RootNamespace>
