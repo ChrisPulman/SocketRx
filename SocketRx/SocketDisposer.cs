@@ -9,6 +9,10 @@ using Microsoft.Extensions.Logging;
 
 namespace CP.Net.Sockets;
 
+/// <summary>
+/// SocketDisposer.
+/// </summary>
+/// <seealso cref="System.IAsyncDisposable" />
 internal sealed class SocketDisposer : IAsyncDisposable
 {
     private readonly ILogger _logger;
@@ -19,11 +23,26 @@ internal sealed class SocketDisposer : IAsyncDisposable
     private readonly CancellationTokenSource _receiveCts;
     private int _disposals;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SocketDisposer"/> class.
+    /// </summary>
+    /// <param name="socket">The socket.</param>
+    /// <param name="name">The name.</param>
+    /// <param name="receiveCts">The receive CTS.</param>
+    /// <param name="logger">The logger.</param>
     internal SocketDisposer(Socket socket, string name, CancellationTokenSource receiveCts, ILogger logger)
         : this(socket, AsyncEmptyDisposable.Instance, name, receiveCts, logger)
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SocketDisposer"/> class.
+    /// </summary>
+    /// <param name="socket">The socket.</param>
+    /// <param name="disposable">The disposable.</param>
+    /// <param name="name">The name.</param>
+    /// <param name="receiveCts">The receive CTS.</param>
+    /// <param name="logger">The logger.</param>
     internal SocketDisposer(Socket socket, IAsyncDisposable disposable, string name, CancellationTokenSource receiveCts, ILogger logger)
     {
         _socket = socket;
@@ -33,8 +52,20 @@ internal sealed class SocketDisposer : IAsyncDisposable
         _disposable = disposable;
     }
 
+    /// <summary>
+    /// Gets a value indicating whether [dispose requested].
+    /// </summary>
+    /// <value>
+    ///   <c>true</c> if [dispose requested]; otherwise, <c>false</c>.
+    /// </value>
     internal bool DisposeRequested => _disposals > 0;
 
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources asynchronously.
+    /// </summary>
+    /// <returns>
+    /// A task that represents the asynchronous dispose operation.
+    /// </returns>
     public async ValueTask DisposeAsync()
     {
         if (Interlocked.Increment(ref _disposals) > 1)
@@ -62,7 +93,6 @@ internal sealed class SocketDisposer : IAsyncDisposable
                 _logger.LogDisposed(_name, localEndPoint);
             }
 
-            // SocketAcceptor or AsyncEmptyDisposable
             await _disposable.DisposeAsync().ConfigureAwait(false);
         }
         catch (Exception e)

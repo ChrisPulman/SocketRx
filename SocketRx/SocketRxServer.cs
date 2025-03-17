@@ -15,7 +15,7 @@ namespace CP.Net.Sockets;
 /// <summary>
 /// SocketRxServer.
 /// </summary>
-/// <seealso cref="CP.Net.Sockets.ISocketRxServer" />
+/// <seealso cref="ISocketRxServer" />
 public sealed class SocketRxServer : ISocketRxServer
 {
     private readonly CancellationTokenSource _cts = new();

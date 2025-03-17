@@ -16,7 +16,10 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace CP.Net.Sockets;
 
-internal static partial class Mixins
+/// <summary>
+/// Mixins.
+/// </summary>
+public static partial class Mixins
 {
     /// <summary>
     /// Creates the socket rx client asynchronous.
@@ -344,8 +347,17 @@ internal static partial class Mixins
                 }));
     }
 
+    /// <summary>
+    /// Creates the ip end point on port.
+    /// </summary>
+    /// <param name="port">The port.</param>
+    /// <returns>IPEndPoint.</returns>
     internal static IPEndPoint CreateIPEndPointOnPort(int port) => new(IPAddress.Loopback, port);
 
+    /// <summary>
+    /// Creates the socket.
+    /// </summary>
+    /// <returns>Socket.</returns>
     internal static Socket CreateSocket() => new(SocketType.Stream, ProtocolType.Tcp) { NoDelay = true };
 
     [LoggerMessage(EventId = 1, EventName = "SendBytes", Level = LogLevel.Trace, Message = "Send: {Name} on {LocalEndPoint} sending {Bytes} bytes to {RemoteEndPoint}.")]

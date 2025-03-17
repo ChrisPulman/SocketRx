@@ -13,12 +13,21 @@ using Microsoft.Extensions.Logging;
 
 namespace CP.Net.Sockets;
 
+/// <summary>
+/// AcceptorFactory.
+/// </summary>
+/// <seealso cref="IAsyncDisposable" />
 internal sealed class AcceptorFactory : IAsyncDisposable
 {
     private readonly ILogger _logger;
     private readonly Socket _socket;
     private readonly List<ISocketRxClient> _clients = [];
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AcceptorFactory"/> class.
+    /// </summary>
+    /// <param name="socket">The socket.</param>
+    /// <param name="logger">The logger.</param>
     internal AcceptorFactory(Socket socket, ILogger logger)
     {
         _socket = socket;
@@ -36,6 +45,10 @@ internal sealed class AcceptorFactory : IAsyncDisposable
         await Task.WhenAll(tasks).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Creates the accept observable.
+    /// </summary>
+    /// <returns>ISocketRxClient.</returns>
     internal IObservable<ISocketRxClient> CreateAcceptObservable() =>
         Observable.Create<ISocketRxClient>(async (observer, ct) =>
         {
@@ -62,6 +75,11 @@ internal sealed class AcceptorFactory : IAsyncDisposable
             }
         });
 
+    /// <summary>
+    /// Creates the accept all asynchronous.
+    /// </summary>
+    /// <param name="ct">The ct.</param>
+    /// <returns>ISocketRxClient.</returns>
     internal async IAsyncEnumerable<ISocketRxClient> CreateAcceptAllAsync([EnumeratorCancellation] CancellationToken ct)
     {
         Socket acceptSocket;

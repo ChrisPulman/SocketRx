@@ -24,6 +24,12 @@ internal sealed class ReceiverFactory
     private int _position;
     private int _bytesReceived;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ReceiverFactory"/> class.
+    /// </summary>
+    /// <param name="socket">The socket.</param>
+    /// <param name="name">The name.</param>
+    /// <param name="logger">The logger.</param>
     internal ReceiverFactory(Socket socket, string name, ILogger logger)
     {
         _socket = socket;
@@ -31,6 +37,10 @@ internal sealed class ReceiverFactory
         _logger = logger;
     }
 
+    /// <summary>
+    /// Creates the receive observable.
+    /// </summary>
+    /// <returns>A byte.</returns>
     internal IObservable<byte> CreateReceiveObservable()
     {
         Debug.Assert(Thread.CurrentThread.IsBackground, "Not a background thread.");
@@ -76,6 +86,11 @@ internal sealed class ReceiverFactory
         });
     }
 
+    /// <summary>
+    /// Receives all asynchronous.
+    /// </summary>
+    /// <param name="ct">The ct.</param>
+    /// <returns>A byte.</returns>
     internal async IAsyncEnumerable<byte> ReceiveAllAsync([EnumeratorCancellation] CancellationToken ct = default)
     {
         while (!ct.IsCancellationRequested)

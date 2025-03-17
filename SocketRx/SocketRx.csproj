@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<AnalysisMode>All</AnalysisMode>
 		<IsAotCompatible>true</IsAotCompatible>
+		<RootNamespace>CP.Net.Sockets</RootNamespace>
 	</PropertyGroup>
   <ItemGroup>
     <Compile Update="**\*.cs" DependentUpon="I%(Filename).cs" />
