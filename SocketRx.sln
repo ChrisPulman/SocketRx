@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ConfigFiles", "ConfigFiles"
 		Version.json = Version.json
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketRx.Tests", "SocketRx.Tests\SocketRx.Tests.csproj", "{A99311A4-13EA-4342-A8E5-EA1143BB24CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{234FA7F1-DFE1-4220-9FEB-47A330ED2F8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{234FA7F1-DFE1-4220-9FEB-47A330ED2F8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{234FA7F1-DFE1-4220-9FEB-47A330ED2F8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A99311A4-13EA-4342-A8E5-EA1143BB24CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A99311A4-13EA-4342-A8E5-EA1143BB24CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A99311A4-13EA-4342-A8E5-EA1143BB24CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A99311A4-13EA-4342-A8E5-EA1143BB24CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
