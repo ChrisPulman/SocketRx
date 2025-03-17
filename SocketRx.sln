@@ -9,13 +9,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ConfigFiles", "ConfigFiles"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
-		appveyor.yml = appveyor.yml
 		Directory.Build.props = Directory.Build.props
 		README.md = README.md
 		Version.json = Version.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketRx.Tests", "SocketRx.Tests\SocketRx.Tests.csproj", "{A99311A4-13EA-4342-A8E5-EA1143BB24CC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{8660F5C8-1226-4F20-9F9A-876FFE98E257}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +32,8 @@ Global
 		{A99311A4-13EA-4342-A8E5-EA1143BB24CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A99311A4-13EA-4342-A8E5-EA1143BB24CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A99311A4-13EA-4342-A8E5-EA1143BB24CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8660F5C8-1226-4F20-9F9A-876FFE98E257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8660F5C8-1226-4F20-9F9A-876FFE98E257}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
