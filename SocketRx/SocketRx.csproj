@@ -1,5 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+		<AnalysisMode>All</AnalysisMode>
+		<IsAotCompatible>true</IsAotCompatible>
+		<RootNamespace>CP.Net.Sockets</RootNamespace>
+	</PropertyGroup>
   <ItemGroup>
     <Compile Update="**\*.cs" DependentUpon="I%(Filename).cs" />
     <PackageReference Include="System.Reactive" Version="6.1.0" />

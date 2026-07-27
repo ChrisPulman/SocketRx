@@ -1,27 +1,30 @@
-﻿namespace CP.Net.Sockets
-{
-    using System;
-    using System.Net;
-    using System.Net.NetworkInformation;
-    using System.Net.Sockets;
-    using System.Reactive.Disposables;
-    using System.Reactive.Linq;
-    using System.Reactive.Subjects;
-    using System.Threading.Tasks;
+﻿// Copyright (c) Chris Pulman. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Threading.Tasks;
+
+namespace CP.Net.Sockets
+{
     /// <summary>
-    /// Socket Rx
+    /// Socket Rx.
     /// </summary>
     /// <seealso cref="System.IDisposable"/>
     public class SocketRx : IDisposable
     {
-        private IDisposable _disposable;
+        private readonly Subject<Exception> _socketExceptionSubject = new();
+        private IDisposable? _disposable;
         private bool _initComplete;
         private bool? _isAvailable;
         private bool? _isConnected;
         private bool _portDisposed = true;
-        private Socket _socket;
-        private readonly ISubject<Exception> _socketExceptionSubject = new Subject<Exception>();
+        private Socket? _socket;
         private bool _disposedValue;
 
         /// <summary>
@@ -58,7 +61,7 @@
         /// Gets the ip address.
         /// </summary>
         /// <value>The ip address.</value>
-        public IPAddress IPAddress { get; private set; }
+        public IPAddress? IPAddress { get; private set; }
 
         /// <summary>
         /// Gets the is available.
@@ -68,7 +71,7 @@
                     Observable.Create<bool>(obs =>
                     {
                         _isAvailable = null;
-                        int count = 0;
+                        var count = 0;
                         return Observable.Timer(TimeSpan.Zero, TimeSpan.FromSeconds(1)).Subscribe(_ =>
                         {
                             count++;
@@ -86,7 +89,7 @@
                                     {
                                         try
                                         {
-                                            var result = ping.Send(IPAddress);
+                                            var result = ping.Send(IPAddress!);
                                             if (result != null)
                                             {
                                                 _isAvailable = result?.Status == IPStatus.Success;
@@ -99,7 +102,8 @@
                                     }
                                 }
                             }
-                            var isAvail = _isAvailable != null && _isAvailable.HasValue ? _isAvailable.Value : false;
+
+                            var isAvail = _isAvailable != null && _isAvailable.HasValue && _isAvailable.Value;
                             obs.OnNext(isAvail);
                         });
                     }).Retry().Publish(false).RefCount();
@@ -129,7 +133,8 @@
                                             _isConnected = false;
                                         }
                                     }
-                                    var isCon = _isConnected != null && _isConnected.HasValue ? _isConnected.Value : false;
+
+                                    var isCon = _isConnected != null && _isConnected.HasValue && _isConnected.Value;
 
                                     obs.OnNext(isCon);
                                 });
@@ -190,6 +195,7 @@
                 Task.Run(() => _disposable = CreatePort(endpoint).Subscribe());
                 return;
             }
+
             _socketExceptionSubject.OnNext(new Exception("Socket already connected"));
         }
 
@@ -209,6 +215,7 @@
                 Task.Run(() => _disposable = CreatePort(endpoint).Subscribe());
                 return;
             }
+
             _socketExceptionSubject.OnNext(new Exception("Socket already connected"));
         }
 
@@ -226,13 +233,14 @@
                 Task.Run(() => _disposable = CreatePort(endpoint).Subscribe());
                 return;
             }
+
             _socketExceptionSubject.OnNext(new Exception("Socket already connected"));
         }
 
         /// <summary>
         /// Initializes the connected device after connecting.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A bool.</returns>
         public virtual bool InitialiseDevice() => true;
 
         /// <summary>
@@ -241,7 +249,7 @@
         /// <param name="buffer">The buffer.</param>
         /// <param name="size">The size.</param>
         /// <param name="socketFlags">The socket flags.</param>
-        /// <returns></returns>
+        /// <returns>A int.</returns>
         public int Receive(byte[] buffer, int size, SocketFlags socketFlags = SocketFlags.None)
         {
             if (_initComplete)
@@ -252,6 +260,7 @@
                     {
                         return (int)_socket?.Receive(buffer, size, socketFlags)!;
                     }
+
                     _socketExceptionSubject.OnNext(new Exception("Device not connected"));
                 }
                 catch (Exception ex)
@@ -269,7 +278,7 @@
         /// <param name="buffer">The buffer.</param>
         /// <param name="size">The size.</param>
         /// <param name="socketFlags">The socket flags.</param>
-        /// <returns></returns>
+        /// <returns>a int.</returns>
         public int Send(byte[] buffer, int size, SocketFlags socketFlags = SocketFlags.None)
         {
             if (_initComplete)
@@ -280,6 +289,7 @@
                     {
                         return (int)_socket?.Send(buffer, size, socketFlags)!;
                     }
+
                     _socketExceptionSubject.OnNext(new Exception("Device not connected"));
                 }
                 catch (Exception ex)
@@ -301,108 +311,6 @@
             GC.SuppressFinalize(this);
         }
 
-        private static void CloseSocket(Socket socket)
-        {
-            if (socket != null && socket.Connected)
-            {
-                socket.Shutdown(SocketShutdown.Both);
-                socket.Close();
-                socket.Dispose();
-            }
-        }
-
-        private IObservable<bool> CreatePort(IPEndPoint endpoint) =>
-                                                            Observable.Create<bool>(obs =>
-                                                            {
-                                                                var dis = new CompositeDisposable();
-                                                                _socket = new Socket(AddressFamily, SocketType, ProtocolType);
-                                                                dis.Add(_socket);
-                                                                _initComplete = false;
-
-                                                                dis.Add(_socketExceptionSubject.Subscribe(ex =>
-                                                                {
-                                                                    if (ex != null)
-                                                                    {
-                                                                        obs.OnError(ex);
-                                                                    }
-                                                                }));
-                                                                dis.Add(IsConnected.Subscribe(deviceConnected =>
-                                                                {
-                                                                    var isAvail = _isAvailable != null && _isAvailable.HasValue ? _isAvailable.Value : false;
-                                                                    obs.OnNext(isAvail && deviceConnected);
-                                                                    if (_initComplete && !deviceConnected)
-                                                                    {
-                                                                        SocketRx.CloseSocket(_socket);
-                                                                        obs.OnError(new Exception("Device not connected"));
-                                                                        return;
-                                                                    }
-                                                                }, ex =>
-                                                                {
-                                                                    SocketRx.CloseSocket(_socket);
-                                                                    obs.OnError(ex);
-                                                                }));
-                                                                dis.Add(IsAvailable.Subscribe(deviceAvailiable =>
-                                                                {
-                                                                    try
-                                                                    {
-                                                                        if (_isAvailable != null)
-                                                                        {
-                                                                            var isAvail = _isAvailable != null && _isAvailable.HasValue ? _isAvailable.Value : false;
-                                                                            if (isAvail)
-                                                                            {
-                                                                                if (!_initComplete)
-                                                                                {
-                                                                                    var socketCreated = false;
-                                                                                    if (_socket == null)
-                                                                                    {
-                                                                                        socketCreated = false;
-                                                                                    }
-                                                                                    else
-                                                                                    {
-                                                                                        _socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, this.ReceiveTimeout);
-                                                                                        _socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendTimeout, this.SendTimeout);
-                                                                                        _socket.Connect(endpoint);
-                                                                                        _isConnected = _socket.Connected || (_socket.Poll(1000, SelectMode.SelectRead) && this._socket.Available == 0);
-                                                                                        socketCreated = _isConnected != null && _isConnected.HasValue ? _isConnected.Value : false;
-                                                                                    }
-                                                                                    var deviceInitialised = InitialiseDevice();
-                                                                                    _initComplete = socketCreated && deviceInitialised;
-                                                                                    if (!socketCreated)
-                                                                                    {
-                                                                                        SocketRx.CloseSocket(_socket);
-                                                                                        obs.OnError(new Exception("Device not connected"));
-                                                                                        return;
-                                                                                    }
-                                                                                }
-                                                                                var isCon = _isConnected != null && _isConnected.HasValue ? _isConnected.Value : false;
-                                                                                if (_initComplete && !isCon)
-                                                                                {
-                                                                                    SocketRx.CloseSocket(_socket);
-                                                                                    obs.OnError(new Exception("Device not connected"));
-                                                                                    return;
-                                                                                }
-                                                                            }
-                                                                            else
-                                                                            {
-                                                                                SocketRx.CloseSocket(_socket);
-                                                                                obs.OnError(new Exception("Device Unavailable"));
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                    catch (Exception ex)
-                                                                    {
-                                                                        SocketRx.CloseSocket(_socket);
-                                                                        obs.OnError(ex);
-                                                                    }
-                                                                }, ex =>
-                                                                {
-                                                                    SocketRx.CloseSocket(_socket);
-                                                                    obs.OnError(ex);
-                                                                }));
-
-                                                                return dis;
-                                                            }).Retry().Publish(false).RefCount();
-
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
@@ -422,5 +330,113 @@
                 _disposedValue = true;
             }
         }
+
+        private static void CloseSocket(Socket? socket)
+        {
+            if (socket?.Connected == true)
+            {
+                socket.Shutdown(SocketShutdown.Both);
+                socket.Close();
+                socket.Dispose();
+            }
+        }
+
+        private IObservable<bool> CreatePort(IPEndPoint endpoint) =>
+            Observable.Create<bool>(obs =>
+            {
+                var dis = new CompositeDisposable();
+                _socket = new Socket(AddressFamily, SocketType, ProtocolType);
+                dis.Add(_socket);
+                _initComplete = false;
+
+                dis.Add(_socketExceptionSubject.Subscribe(ex =>
+                {
+                    if (ex != null)
+                    {
+                        obs.OnError(ex);
+                    }
+                }));
+                dis.Add(IsConnected.Subscribe(
+                    deviceConnected =>
+                {
+                    var isAvail = _isAvailable != null && _isAvailable.HasValue && _isAvailable.Value;
+                    obs.OnNext(isAvail && deviceConnected);
+                    if (_initComplete && !deviceConnected)
+                    {
+                        CloseSocket(_socket);
+                        obs.OnError(new Exception("Device not connected"));
+                        return;
+                    }
+                },
+                    ex =>
+                {
+                    CloseSocket(_socket);
+                    obs.OnError(ex);
+                }));
+                dis.Add(IsAvailable.Subscribe(
+                    deviceAvailiable =>
+                {
+                    try
+                    {
+                        if (_isAvailable != null)
+                        {
+                            var isAvail = _isAvailable != null && _isAvailable.HasValue && _isAvailable.Value;
+                            if (isAvail)
+                            {
+                                if (!_initComplete)
+                                {
+                                    var socketCreated = false;
+                                    if (_socket == null)
+                                    {
+                                        socketCreated = false;
+                                    }
+                                    else
+                                    {
+                                        _socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, ReceiveTimeout);
+                                        _socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendTimeout, SendTimeout);
+                                        _socket.Connect(endpoint);
+                                        _isConnected = _socket.Connected || (_socket.Poll(1000, SelectMode.SelectRead) && _socket.Available == 0);
+                                        socketCreated = _isConnected != null && _isConnected.HasValue && _isConnected.Value;
+                                    }
+
+                                    var deviceInitialised = InitialiseDevice();
+                                    _initComplete = socketCreated && deviceInitialised;
+                                    if (!socketCreated)
+                                    {
+                                        CloseSocket(_socket);
+                                        obs.OnError(new Exception("Device not connected"));
+                                        return;
+                                    }
+                                }
+
+                                var isCon = _isConnected != null && _isConnected.HasValue && _isConnected.Value;
+                                if (_initComplete && !isCon)
+                                {
+                                    CloseSocket(_socket);
+                                    obs.OnError(new Exception("Device not connected"));
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                CloseSocket(_socket);
+                                obs.OnError(new Exception("Device Unavailable"));
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        CloseSocket(_socket);
+                        obs.OnError(ex);
+                    }
+                },
+                    ex =>
+                {
+                    CloseSocket(_socket);
+                    obs.OnError(ex);
+                }));
+
+                return dis;
+            }).Retry().Publish(false).RefCount();
     }
 }
